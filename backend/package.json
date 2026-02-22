@@ -1,0 +1,29 @@
+{
+  "name": "obsht-backend",
+  "version": "1.0.0",
+  "description": "Monolithic backend skeleton for Multi-User Task Management System",
+  "main": "dist/src/main.js",
+  "scripts": {
+    "start": "node dist/src/main.js",
+    "start:dev": "ts-node -r tsconfig-paths/register src/main.ts",
+    "build": "nest build"
+  },
+  "dependencies": {
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/core": "^9.0.0",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/platform-express": "^9.4.3",
+    "@supabase/supabase-js": "^2.39.7",
+    "dotenv": "^17.3.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.2.0",
+    "tsconfig-paths": "^4.2.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^9.0.0",
+    "@nestjs/schematics": "^9.0.0",
+    "@nestjs/testing": "^9.0.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
+  }
+}
