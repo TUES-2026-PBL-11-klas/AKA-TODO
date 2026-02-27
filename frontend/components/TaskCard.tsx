@@ -30,12 +30,13 @@ const statusLabel: Record<string, string> = {
 
 interface TaskCardProps {
   task: Task;
+  categoryName?: string;
   onEdit: (task: Task) => void;
   onDelete: (task: Task) => void;
   onToggleDone: (task: Task) => void;
 }
 
-export default function TaskCard({ task, onEdit, onDelete, onToggleDone }: TaskCardProps) {
+export default function TaskCard({ task, categoryName, onEdit, onDelete, onToggleDone }: TaskCardProps) {
   const isDone = task.status === 'done';
 
   return (
@@ -45,6 +46,11 @@ export default function TaskCard({ task, onEdit, onDelete, onToggleDone }: TaskC
           {task.title}
         </p>
         <div className="flex items-center gap-1.5 shrink-0">
+          {categoryName && (
+            <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-indigo-500/20 text-indigo-400">
+              {categoryName}
+            </span>
+          )}
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${priorityStyles[task.priority] ?? priorityStyles.Low}`}>
             {task.priority}
           </span>

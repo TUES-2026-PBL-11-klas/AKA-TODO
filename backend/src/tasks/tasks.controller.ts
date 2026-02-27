@@ -22,8 +22,9 @@ export class TasksController {
     @Request() req,
     @Query('status') status?: string,
     @Query('priority') priority?: string,
+    @Query('category_id') categoryId?: string,
   ) {
-    return this.tasksService.findAll(req.user.id, status, priority);
+    return this.tasksService.findAll(req.user.id, status, priority, categoryId ? Number(categoryId) : undefined);
   }
 
   @Get(':id')

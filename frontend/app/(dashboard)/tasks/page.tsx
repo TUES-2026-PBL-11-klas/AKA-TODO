@@ -35,6 +35,7 @@ export default function TasksPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [status, setStatus] = useState('');
   const [priority, setPriority] = useState('');
+  const [categoryId, setCategoryId] = useState('');
   const [loading, setLoading] = useState(true);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -45,6 +46,7 @@ export default function TasksPage() {
     const params = new URLSearchParams();
     if (status) params.set('status', status);
     if (priority) params.set('priority', priority);
+    if (categoryId) params.set('category_id', categoryId);
     const qs = params.toString();
     const [taskData, statsData] = await Promise.all([
       apiFetch<Task[]>(`/tasks${qs ? `?${qs}` : ''}`),
@@ -52,7 +54,7 @@ export default function TasksPage() {
     ]);
     setTasks(taskData);
     setStats(statsData);
-  }, [status, priority]);
+  }, [status, priority, categoryId]);
 
   useEffect(() => {
     apiFetch<Category[]>('/categories').then(setCategories).catch(() => {});
@@ -118,8 +120,11 @@ export default function TasksPage() {
         <FilterBar
           status={status}
           priority={priority}
+          categoryId={categoryId}
+          categories={categories}
           onStatusChange={setStatus}
           onPriorityChange={setPriority}
+          onCategoryChange={setCategoryId}
         />
       </div>
 
@@ -139,6 +144,7 @@ export default function TasksPage() {
             <TaskCard
               key={task.id}
               task={task}
+              categoryName={categories.find((c) => c.id === task.category_id)?.name}
               onEdit={openEdit}
               onDelete={setDeletingTask}
               onToggleDone={handleToggleDone}

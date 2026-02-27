@@ -5,7 +5,7 @@ import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Injectable()
 export class TasksService {
-	async findAll(userId: string, status?: string, priority?: string): Promise<Task[]> {
+	async findAll(userId: string, status?: string, priority?: string, categoryId?: number): Promise<Task[]> {
 		let query = supabase
 			.from('tasks')
 			.select('*')
@@ -15,6 +15,7 @@ export class TasksService {
 
 		if (status) query = query.eq('status', status);
 		if (priority) query = query.eq('priority', priority);
+		if (categoryId) query = query.eq('category_id', categoryId);
 
 		const { data, error } = await query;
 		if (error) throw error;
