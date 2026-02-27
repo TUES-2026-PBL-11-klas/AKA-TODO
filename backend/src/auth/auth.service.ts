@@ -10,6 +10,9 @@ export class AuthService {
       password: dto.password,
     });
     if (error) throw new BadRequestException(error.message);
+    if (data.user) {
+      await supabase.from('users').insert([{ id: data.user.id, email: dto.email }]);
+    }
     return { user: data.user, session: data.session };
   }
 

@@ -1,6 +1,6 @@
 export interface Category {
   id: number;
-  user_id: number;
+  user_id: string;
   name: string;
   created_at: string;
 }
