@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { supabase } from '../supabase.client';
 import { Category } from './category.entity';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -24,5 +25,25 @@ export class CategoriesService {
 		const { data, error } = await supabase.from('categories').insert([category]).select().single();
 		if (error) throw error;
 		return data as Category;
+	}
+
+	async update(id: number, userId: string, dto: UpdateCategoryDto): Promise<Category> {
+		const existing = await this.findById(id);
+		if (!existing || existing.user_id !== userId) throw new ForbiddenException();
+		const { data, error } = await supabase
+			.from('categories')
+			.update(dto)
+			.eq('id', id)
+			.select()
+			.single();
+		if (error) throw error;
+		return data as Category;
+	}
+
+	async delete(id: number, userId: string): Promise<void> {
+		const existing = await this.findById(id);
+		if (!existing || existing.user_id !== userId) throw new ForbiddenException();
+		const { error } = await supabase.from('categories').delete().eq('id', id);
+		if (error) throw error;
 	}
 }
