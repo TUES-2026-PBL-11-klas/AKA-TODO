@@ -30,13 +30,18 @@ const statusLabel: Record<string, string> = {
 
 interface TaskCardProps {
   task: Task;
+  onEdit: (task: Task) => void;
+  onDelete: (task: Task) => void;
+  onToggleDone: (task: Task) => void;
 }
 
-export default function TaskCard({ task }: TaskCardProps) {
+export default function TaskCard({ task, onEdit, onDelete, onToggleDone }: TaskCardProps) {
+  const isDone = task.status === 'done';
+
   return (
     <div className="bg-slate-800 border border-slate-700 rounded-xl p-4 flex flex-col gap-2">
       <div className="flex items-start justify-between gap-2">
-        <p className={`font-medium text-sm ${task.status === 'done' ? 'line-through text-slate-500' : 'text-white'}`}>
+        <p className={`font-medium text-sm ${isDone ? 'line-through text-slate-500' : 'text-white'}`}>
           {task.title}
         </p>
         <div className="flex items-center gap-1.5 shrink-0">
@@ -48,12 +53,38 @@ export default function TaskCard({ task }: TaskCardProps) {
           </span>
         </div>
       </div>
+
       {task.description && (
         <p className="text-xs text-slate-400 leading-relaxed">{task.description}</p>
       )}
-      <p className="text-xs text-slate-600">
-        {new Date(task.created_at).toLocaleDateString()}
-      </p>
+
+      <div className="flex items-center justify-between mt-1">
+        <p className="text-xs text-slate-600">{new Date(task.created_at).toLocaleDateString()}</p>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onToggleDone(task)}
+            className={`text-xs px-2 py-1 rounded-lg transition-colors ${
+              isDone
+                ? 'text-slate-400 hover:text-white bg-slate-700 hover:bg-slate-600'
+                : 'text-emerald-400 hover:text-white bg-emerald-500/10 hover:bg-emerald-600'
+            }`}
+          >
+            {isDone ? 'Undo' : 'Done'}
+          </button>
+          <button
+            onClick={() => onEdit(task)}
+            className="text-xs px-2 py-1 rounded-lg text-slate-400 hover:text-white bg-slate-700 hover:bg-slate-600 transition-colors"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => onDelete(task)}
+            className="text-xs px-2 py-1 rounded-lg text-red-400 hover:text-white bg-red-500/10 hover:bg-red-600 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
