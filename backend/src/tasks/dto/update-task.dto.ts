@@ -1,5 +1,5 @@
-export class CreateTaskDto {
-  title: string;
+export class UpdateTaskDto {
+  title?: string;
   description?: string;
   status?: string;
   priority?: string;

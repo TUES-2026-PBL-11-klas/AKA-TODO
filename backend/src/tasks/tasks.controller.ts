@@ -1,6 +1,10 @@
-import { Controller, Get, Post, Param, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller, Get, Post, Patch, Delete,
+  Param, Body, UseGuards, Request, Query, HttpCode,
+} from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
@@ -8,9 +12,18 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
+  @Get('stats')
+  getStats(@Request() req) {
+    return this.tasksService.findStats(req.user.id);
+  }
+
   @Get()
-  findAll() {
-    return this.tasksService.findAll();
+  findAll(
+    @Request() req,
+    @Query('status') status?: string,
+    @Query('priority') priority?: string,
+  ) {
+    return this.tasksService.findAll(req.user.id, status, priority);
   }
 
   @Get(':id')
@@ -19,7 +32,18 @@ export class TasksController {
   }
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.tasksService.create(createTaskDto);
+  create(@Request() req, @Body() createTaskDto: CreateTaskDto) {
+    return this.tasksService.create({ ...createTaskDto, user_id: req.user.id });
+  }
+
+  @Patch(':id')
+  update(@Request() req, @Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+    return this.tasksService.update(Number(id), req.user.id, updateTaskDto);
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  softDelete(@Request() req, @Param('id') id: string) {
+    return this.tasksService.softDelete(Number(id), req.user.id);
   }
 }

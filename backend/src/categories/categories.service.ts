@@ -4,8 +4,12 @@ import { Category } from './category.entity';
 
 @Injectable()
 export class CategoriesService {
-	async findAll(): Promise<Category[]> {
-		const { data, error } = await supabase.from('categories').select('*');
+	async findAll(userId: string): Promise<Category[]> {
+		const { data, error } = await supabase
+			.from('categories')
+			.select('*')
+			.eq('user_id', userId)
+			.order('created_at', { ascending: true });
 		if (error) throw error;
 		return data as Category[];
 	}

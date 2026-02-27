@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, UseGuards, Request } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -9,8 +9,8 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  findAll(@Request() req) {
+    return this.categoriesService.findAll(req.user.id);
   }
 
   @Get(':id')
@@ -19,7 +19,7 @@ export class CategoriesController {
   }
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+  create(@Request() req, @Body() createCategoryDto: CreateCategoryDto) {
+    return this.categoriesService.create({ ...createCategoryDto, user_id: req.user.id });
   }
 }
